@@ -1,5 +1,5 @@
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/NotFound";
 import SignIn from "@/pages/SignIn";
@@ -34,7 +34,10 @@ import StaffDashboard from "@/pages/staff/StaffDashboard";
 import MakeTransaction from "@/pages/staff/MakeTransaction";
 import StaffSettings from "@/pages/staff/StaffSettings";
 
-
+const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+    const institutionId = localStorage.getItem('institutionId');
+    return institutionId ? children : <Navigate to="/sign-in" replace />;
+};
 
 const AppRoutes = () => {
   return (
@@ -46,18 +49,19 @@ const AppRoutes = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       
       {/* Admin Routes */}
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/students" element={<StudentsList />} />
-      <Route path="/admin/students/add" element={<AddStudent />} />
-      <Route path="/admin/students/update/:id" element={<UpdateStudent />} />
-      <Route path="/admin/students/delete/:id" element={<DeleteStudent />} />
-      <Route path="/admin/staff" element={<StaffList />} />
-      <Route path="/admin/staff/add" element={<AddStaff />} />
-      <Route path="/admin/staff/update/:id" element={<UpdateStaff />} />
-      <Route path="/admin/staff/delete/:id" element={<DeleteStaff />} />
-      <Route path="/admin/settings" element={<AdminSettings />} />
-      <Route path="/admin/notifications" element={<AdminNotifications />} />
-      
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}/>
+        <Route path="/admin/students" element={<ProtectedRoute><StudentsList /></ProtectedRoute>}/>
+        <Route path="/admin/students/add" element={<ProtectedRoute><AddStudent /></ProtectedRoute>}/>
+        <Route path="/admin/students/update/:id" element={<ProtectedRoute><UpdateStudent /></ProtectedRoute>}/>
+        <Route path="/admin/students/delete/:id" element={<ProtectedRoute><DeleteStudent /></ProtectedRoute>}/>
+        <Route path="/admin/staff" element={<ProtectedRoute><StaffList /></ProtectedRoute>}/>
+        <Route path="/admin/staff/add" element={<ProtectedRoute><AddStaff /></ProtectedRoute>}/>
+        <Route path="/admin/staff/update/:id" element={<ProtectedRoute><UpdateStaff /></ProtectedRoute>}/>
+        <Route path="/admin/staff/delete/:id" element={<ProtectedRoute><DeleteStaff /></ProtectedRoute>}/>
+        <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>}/>
+        <Route path="/admin/notifications" element={<ProtectedRoute><AdminNotifications /></ProtectedRoute>}/>
+
+        <Route path="*" element={<Navigate to="/sign-in" replace />} />
       {/* Parent Routes */}
         <Route path="/parent" element={<ParentDashboard />} />
         {/*<Route path="/parent/transactions" element={<ParentTransactions />} />*/}
